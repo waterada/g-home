@@ -4,7 +4,7 @@ const express = require('express');
 const router = express.Router();
 const fs = require('fs');
 
-router.get('/g-home', function (req, res) {
+router.post('/g-home', function (req, res) {
     let action = req.body.result.action;
     let path = __dirname + '/../public/data.json';
     let data = JSON.parse(fs.readFileSync(path));
