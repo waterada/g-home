@@ -5,17 +5,21 @@ const router = express.Router();
 const fs = require('fs');
 
 router.get('/g-home', function (req, res) {
-    let curtain = req.query.c;
-    let light   = req.query.l;
+    let action = req.body.result.action;
     let path = __dirname + '/../public/data.json';
-    console.log(path);
-    let current = JSON.parse(fs.readFileSync(path));
-    if (curtain) current.curtain = (curtain === '1' ? 1 : 0);
-    if (light) current.light = (light === '1' ? 1 : 0);
-    fs.writeFileSync(path, JSON.stringify(current));
+    let data = JSON.parse(fs.readFileSync(path));
+    switch (action) {
+        case 'input.open.curtain': data.curtain = 1; break;
+        case 'input.close.curtain': data.curtain = 0; break;
+        case 'input.turn.on.light': data.light = 1; break;
+        case 'input.turn.off.light': data.light = 0; break;
+        default:
+            console.log(`Unexpected action: [${action}] / body: ${JSON.stringify(req.body)}`);
+    }
+    fs.writeFileSync(path, JSON.stringify(data));
     res.json({
         result: 'ok',
-        current,
+        data,
     });
 });
 
